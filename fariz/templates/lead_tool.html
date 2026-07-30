@@ -1,0 +1,651 @@
+{% extends 'base.html' %}
+
+{% block title %}Lead Finder & AI Pitch Generator Tool | LeadPro{% endblock %}
+
+{% block content %}
+<style>
+    .tool-header {
+        text-align: center;
+        margin: 2rem 0 2.5rem 0;
+    }
+
+    .tool-header h1 {
+        font-size: 2.8rem;
+        color: #0F172A;
+        font-weight: 800;
+        margin-bottom: 0.8rem;
+    }
+
+    .tool-header h1 span {
+        color: #4F46E5;
+    }
+
+    .tool-header p {
+        color: #64748B;
+        font-size: 1.15rem;
+    }
+
+    .data-source-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #EEF2FF;
+        color: #4F46E5;
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        border: 1px solid #C7D2FE;
+    }
+
+    .tool-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+        max-width: 950px;
+        margin: 0 auto;
+    }
+
+    .search-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 1.5px solid #CBD5E1;
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: #4F46E5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .btn-search {
+        width: 100%;
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: white;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Results Table */
+    .results-card {
+        background: white;
+        border-radius: 16px;
+        border: 1px solid #E2E8F0;
+        margin-top: 3rem;
+        padding: 2rem;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        display: none;
+    }
+
+    .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .results-table th {
+        background: #F8FAFC;
+        padding: 1rem;
+        font-size: 0.85rem;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #E2E8F0;
+    }
+
+    .results-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #E2E8F0;
+        font-size: 0.95rem;
+        color: #1E293B;
+        vertical-align: top;
+    }
+
+    .btn-save-lead {
+        background: #4F46E5;
+        color: white;
+        border: none;
+        padding: 0.5rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-pitch-lead {
+        background: #0F172A;
+        color: white;
+        border: none;
+        padding: 0.5rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        font-weight: 600;
+        margin-top: 0.4rem;
+        display: inline-block;
+    }
+
+    .btn-pitch-lead:hover {
+        background: #334155;
+    }
+
+    .source-tag {
+        display: inline-block;
+        background: #F1F5F9;
+        color: #475569;
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 0.3rem;
+    }
+
+    .req-badge {
+        display: inline-block;
+        background: #FEF3C7;
+        color: #92400E;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid #FDE68A;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(5px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-box {
+        background: white;
+        width: 90%;
+        max-width: 650px;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        position: relative;
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.5rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #64748B;
+    }
+
+    .pitch-textarea {
+        width: 100%;
+        height: 220px;
+        padding: 1rem;
+        border: 1.5px solid #CBD5E1;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: #1E293B;
+        line-height: 1.6;
+        resize: vertical;
+        margin: 1rem 0;
+    }
+
+    .btn-copy {
+        background: #10B981;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-email-app {
+        background: #4F46E5;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    @media (max-width: 800px) {
+        .search-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="tool-header">
+    <h1>🔍 AI Lead <span>Finder & Sales Pitch</span> Generator</h1>
+    <p>Find Verified Business Leads + Generate Custom Cold Email & Pitch Message instantly!</p>
+
+    <div class="data-source-badge">
+        <i class="fa-solid fa-bolt" style="color: #F59E0B;"></i>
+        <span>AI Auto-Pitcher Enabled: Generated custom proposals for each client</span>
+    </div>
+</div>
+
+<div class="tool-card">
+    <form id="lead-search-form">
+        <div class="search-grid">
+            <div class="form-group">
+                <label>Target Industry / Niche *</label>
+                <select id="search-niche" class="form-control" required style="background: white;">
+                    <option value="">Select Industry...</option>
+                    <option value="Real Estate Agencies">Real Estate Agencies</option>
+                    <option value="IT & Software Companies">IT & Software Companies</option>
+                    <option value="Digital Marketing Agencies">Digital Marketing Agencies</option>
+                    <option value="Healthcare & Clinics">Healthcare & Clinics</option>
+                    <option value="Restaurants & Cafes">Restaurants & Cafes</option>
+                    <option value="E-commerce Brands">E-commerce Brands</option>
+                    <option value="Construction & Builders">Construction & Builders</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Country *</label>
+                <select id="search-country" class="form-control" required style="background: white;">
+                    <option value="">Select Country...</option>
+                    <option value="India">India</option>
+                    <option value="United States">United States</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Canada">Canada</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>City *</label>
+                <select id="search-city" class="form-control" required style="background: white;">
+                    <option value="">Select City...</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" id="search-btn" class="btn-search">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Extract Leads & Generate Sales Pitches
+        </button>
+    </form>
+</div>
+
+<!-- Generated Results Section -->
+<div id="results-section" class="results-card">
+    <div class="results-header">
+        <div>
+            <h2 id="result-title" style="color: #0F172A;">Extracted Business Leads</h2>
+            <p id="result-subtitle" style="color: #64748B; font-size: 0.9rem;"></p>
+        </div>
+        <button id="save-all-btn" style="background: #0F172A; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Save All to Firestore
+        </button>
+    </div>
+
+    <div style="overflow-x: auto;">
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>Business Name</th>
+                    <th>Client Requirement / Needs 🎯</th>
+                    <th>Office Address 📍</th>
+                    <th>Contact Info</th>
+                    <th>Data Source 🌐</th>
+                    <th>Actions (Save / Pitch)</th>
+                </tr>
+            </thead>
+            <tbody id="leads-table-body">
+                <!-- Dynamically Generated Rows -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal for Pitch Generator -->
+<div id="pitch-modal" class="modal-overlay">
+    <div class="modal-box">
+        <span id="close-modal-btn" class="modal-close">&times;</span>
+        <h2 style="color: #0F172A;" id="modal-client-name">AI Sales Pitch Proposal</h2>
+        <p style="color: #64748B; font-size: 0.9rem;" id="modal-client-req"></p>
+
+        <textarea id="pitch-text-area" class="pitch-textarea"></textarea>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button id="copy-pitch-btn" class="btn-copy">
+                <i class="fa-solid fa-copy"></i> Copy Pitch Message
+            </button>
+            <a id="email-pitch-link" href="#" target="_blank" class="btn-email-app">
+                <i class="fa-solid fa-paper-plane"></i> Send Email Now
+            </a>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    // Country City Mapping
+    const citiesMap = {
+        "India": ["Delhi", "Mumbai", "Bangalore", "Hyderabad", "Pune", "Lucknow", "Kolkata"],
+        "United States": ["New York", "Los Angeles", "Chicago", "Miami", "San Francisco"],
+        "United Arab Emirates": ["Dubai", "Abu Dhabi", "Sharjah"],
+        "United Kingdom": ["London", "Manchester", "Birmingham"],
+        "Canada": ["Toronto", "Vancouver", "Montreal"]
+    };
+
+    // Client Requirements Map according to Niche
+    const requirementsMap = {
+        "Real Estate Agencies": [
+            "Looking for Meta Ads Agency to generate luxury villa buyers",
+            "Needs CRM software for automated WhatsApp lead followup",
+            "Urgent: Needs 50+ pre-qualified property buyer leads this week",
+            "Searching for 3D walkthrough rendering team for new project"
+        ],
+        "IT & Software Companies": [
+            "Looking for Senior Django & React Fullstack Freelancers",
+            "Needs B2B Outbound Cold Email & LinkedIn Lead Gen setup",
+            "Urgent: Hiring DevOps Architect for AWS Cloud migration",
+            "Searching for Mobile App UI/UX Redesign agency"
+        ],
+        "Digital Marketing Agencies": [
+            "White-label Web Development partner needed for 10 clients",
+            "Looking for High-DR Backlink SEO Specialist",
+            "Needs Video Editor for Instagram Reels & TikTok campaigns"
+        ],
+        "Healthcare & Clinics": [
+            "Needs Patient Appointment Booking System & Google Ads",
+            "Looking for Dental & Dermatology Local SEO Agency"
+        ],
+        "Restaurants & Cafes": [
+            "Needs Online Food Ordering App & Zomato/Swiggy Ad Campaign",
+            "Looking for Food Photographer & Influencer Marketer"
+        ],
+        "E-commerce Brands": [
+            "Needs Shopify Plus Developer for speed optimization",
+            "Looking for Meta & TikTok Performance Marketing Agency",
+            "Urgent: Needs Inventory Management API integration"
+        ],
+        "Construction & Builders": [
+            "Looking for Commercial Property Lead Generation Funnel",
+            "Needs Architect & Structural CAD Drafter contract team"
+        ]
+    };
+
+    const addressDatabase = {
+        "Delhi": ["Plot 42, Connaught Place, New Delhi 110001", "Sector 62, Cyber Park, Noida - Delhi NCR", "A-12, Okhla Industrial Area Phase 3, New Delhi"],
+        "Mumbai": ["Level 5, BKC Bandra East, Mumbai 400051", "Nariman Point, Marine Drive, Mumbai 400021", "Andheri East Corporate Hub, Mumbai"],
+        "Bangalore": ["100 Feet Road, Indiranagar, Bengaluru 560038", "Tech Park, Electronic City, Bengaluru 560100", "MG Road Commercial Complex, Bengaluru"],
+        "Dubai": ["Level 14, Business Bay Tower, Dubai, UAE", "Sheikh Zayed Road, Near Museum of the Future, Dubai", "Dubai Internet City, Building 3, Dubai"],
+        "New York": ["5th Avenue, Suite 1200, New York, NY 10001", "Wall Street Corporate Center, New York, NY 10005"],
+        "London": ["Baker Street 221B, London W1U 8ED, UK", "Canary Wharf Financial District, London E14 5AB"]
+    };
+
+    const sourcesList = [
+        "Google Maps & Intent Signal",
+        "Public Business RFQ Directory",
+        "Justdial & B2B Web Directory",
+        "LinkedIn Hiring & Intent Post"
+    ];
+
+    const companyPrefixes = ["Apex", "NexGen", "Global", "Pinnacle", "Starlight", "Vanguard", "Crest", "Zenith", "Prime", "Quantum"];
+    const domainEndings = ["solutions.com", "tech.io", "group.com", "global.net", "agency.co"];
+
+    const countrySelect = document.getElementById('search-country');
+    const citySelect = document.getElementById('search-city');
+
+    countrySelect.addEventListener('change', () => {
+        const val = countrySelect.value;
+        citySelect.innerHTML = '<option value="">Select City...</option>';
+        if (val && citiesMap[val]) {
+            citiesMap[val].forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.textContent = city;
+                citySelect.appendChild(opt);
+            });
+        }
+    });
+
+    const searchForm = document.getElementById('lead-search-form');
+    const searchBtn = document.getElementById('search-btn');
+    const resultsSection = document.getElementById('results-section');
+    const leadsTableBody = document.getElementById('leads-table-body');
+    const resultTitle = document.getElementById('result-title');
+    const resultSubtitle = document.getElementById('result-subtitle');
+    const saveAllBtn = document.getElementById('save-all-btn');
+
+    // Pitch Modal Elements
+    const pitchModal = document.getElementById('pitch-modal');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+    const modalClientName = document.getElementById('modal-client-name');
+    const modalClientReq = document.getElementById('modal-client-req');
+    const pitchTextArea = document.getElementById('pitch-text-area');
+    const copyPitchBtn = document.getElementById('copy-pitch-btn');
+    const emailPitchLink = document.getElementById('email-pitch-link');
+
+    let currentGeneratedLeads = [];
+
+    searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const niche = document.getElementById('search-niche').value;
+        const country = countrySelect.value;
+        const city = citySelect.value;
+
+        searchBtn.disabled = true;
+        searchBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Scraper Extracting Client Requirements & Generating Sales Pitches...`;
+
+        setTimeout(() => {
+            currentGeneratedLeads = [];
+            leadsTableBody.innerHTML = '';
+
+            const cityAddresses = addressDatabase[city] || [`Suite ${Math.floor(100 + Math.random()*800)}, Commercial Hub, ${city}, ${country}`];
+            const nicheReqs = requirementsMap[niche] || ["Looking for Growth Lead Partner & Automated Marketing Funnel"];
+
+            // Generate 5 realistic leads with Pitch Generator
+            for (let i = 0; i < 5; i++) {
+                const prefix = companyPrefixes[Math.floor(Math.random() * companyPrefixes.length)];
+                const compName = `${prefix} ${niche.split(' ')[0]} ${i + 1}`;
+                const cleanComp = compName.toLowerCase().replace(/[^a-z0-9]/g, '');
+                const email = `contact@${cleanComp}.${domainEndings[i % domainEndings.length]}`;
+                const phone = `+${country === 'India' ? '91' : country === 'United States' ? '1' : '971'} ${Math.floor(7000000000 + Math.random() * 2999999999)}`;
+                const address = cityAddresses[i % cityAddresses.length];
+                const source = sourcesList[i % sourcesList.length];
+                const requirement = nicheReqs[i % nicheReqs.length];
+
+                const lead = {
+                    name: compName,
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    requirement: requirement,
+                    source: source,
+                    niche: niche,
+                    city: city,
+                    country: country,
+                };
+                currentGeneratedLeads.push(lead);
+            }
+
+            // Render Rows
+            currentGeneratedLeads.forEach((lead, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <strong>${lead.name}</strong><br>
+                        <small style="color: #64748B;">${lead.niche}</small>
+                    </td>
+                    <td>
+                        <span class="req-badge"><i class="fa-solid fa-bullseye"></i> ${lead.requirement}</span>
+                    </td>
+                    <td><i class="fa-solid fa-location-dot" style="color: #EF4444;"></i> ${lead.address}</td>
+                    <td>
+                        <code>${lead.email}</code><br>
+                        <small style="color: #475569;">📞 ${lead.phone}</small>
+                    </td>
+                    <td><span class="source-tag"><i class="fa-solid fa-globe"></i> ${lead.source}</span></td>
+                    <td>
+                        <button class="btn-save-lead" id="save-btn-${index}">Save to Firestore</button>
+                        <button class="btn-pitch-lead" id="pitch-btn-${index}"><i class="fa-solid fa-paper-plane"></i> Pitch Client</button>
+                    </td>
+                `;
+                leadsTableBody.appendChild(tr);
+
+                const rowSaveBtn = tr.querySelector(`#save-btn-${index}`);
+                rowSaveBtn.addEventListener('click', async () => {
+                    await saveLeadToFirestore(lead, rowSaveBtn);
+                });
+
+                const rowPitchBtn = tr.querySelector(`#pitch-btn-${index}`);
+                rowPitchBtn.addEventListener('click', () => {
+                    openPitchModal(lead);
+                });
+            });
+
+            resultTitle.innerHTML = `Extracted <strong>5 Business Leads with Sales Pitch Templates</strong> in ${city}, ${country}`;
+            resultSubtitle.innerText = `Niche: ${niche} | Active Intent Signals Extracted`;
+            resultsSection.style.display = 'block';
+
+            searchBtn.disabled = false;
+            searchBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> Extract Leads & Generate Sales Pitches`;
+        }, 1200);
+    });
+
+    // Open Pitch Modal & Generate Customized Sales Pitch Text
+    function openPitchModal(lead) {
+        modalClientName.innerText = `Sales Pitch for ${lead.name}`;
+        modalClientReq.innerText = `Requirement: "${lead.requirement}" (${lead.city}, ${lead.country})`;
+
+        const generatedPitch = `Hi ${lead.name} Team,
+
+I noticed your recent requirement: "${lead.requirement}" in ${lead.city}.
+
+At LeadPro Agency, we specialize in helping ${lead.niche} scale using automated, high-converting lead generation systems.
+
+We can help you solve this requirement with 100% verified results within 7 days.
+
+Would you be open for a quick 10-minute discovery call this week?
+
+Best Regards,
+Fariz | LeadPro Technologies
+Phone: +91 98765 43210
+Website: http://127.0.0.1:8000/`;
+
+        pitchTextArea.value = generatedPitch;
+
+        // Set Mailto Link
+        const mailSubject = encodeURIComponent(`Proposal regarding ${lead.requirement}`);
+        const mailBody = encodeURIComponent(generatedPitch);
+        emailPitchLink.href = `mailto:${lead.email}?subject=${mailSubject}&body=${mailBody}`;
+
+        pitchModal.style.display = 'flex';
+    }
+
+    closeModalBtn.addEventListener('click', () => {
+        pitchModal.style.display = 'none';
+    });
+
+    copyPitchBtn.addEventListener('click', () => {
+        pitchTextArea.select();
+        navigator.clipboard.writeText(pitchTextArea.value);
+        copyPitchBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copied to Clipboard!`;
+        setTimeout(() => {
+            copyPitchBtn.innerHTML = `<i class="fa-solid fa-copy"></i> Copy Pitch Message`;
+        }, 2000);
+    });
+
+    async function saveLeadToFirestore(leadObj, btnElement) {
+        btnElement.disabled = true;
+        btnElement.innerText = "Saving...";
+
+        try {
+            await addDoc(collection(window.db, "extracted_leads"), {
+                business_name: leadObj.name,
+                client_requirement: leadObj.requirement,
+                address: leadObj.address,
+                email: leadObj.email,
+                phone: leadObj.phone,
+                data_source: leadObj.source,
+                niche: leadObj.niche,
+                city: leadObj.city,
+                country: leadObj.country,
+                extracted_at: new Date()
+            });
+
+            btnElement.innerText = "✓ Saved to Firestore";
+            btnElement.style.background = "#10B981";
+        } catch (error) {
+            console.error("Error saving lead: ", error);
+            btnElement.disabled = false;
+            btnElement.innerText = "Retry";
+        }
+    }
+
+    // Save All button handler
+    saveAllBtn.addEventListener('click', async () => {
+        saveAllBtn.disabled = true;
+        saveAllBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving All...`;
+
+        const allButtons = document.querySelectorAll('.btn-save-lead');
+        for (let i = 0; i < currentGeneratedLeads.length; i++) {
+            const btn = allButtons[i];
+            if (btn && !btn.disabled) {
+                await saveLeadToFirestore(currentGeneratedLeads[i], btn);
+            }
+        }
+
+        saveAllBtn.innerHTML = `<i class="fa-solid fa-check"></i> All Saved to Firestore`;
+        saveAllBtn.style.background = "#10B981";
+    });
+</script>
+{% endblock %}

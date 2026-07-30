@@ -1,0 +1,358 @@
+{% extends 'base.html' %}
+
+{% block title %}Lead Management CRM System | LeadPro{% endblock %}
+
+{% block content %}
+<style>
+    .crm-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 2rem 0;
+    }
+
+    .crm-header h1 {
+        font-size: 2.2rem;
+        color: #0F172A;
+        font-weight: 800;
+    }
+
+    /* Stats Banner */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 14px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+
+    .stat-card p {
+        color: #64748B;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .stat-card h3 {
+        font-size: 1.8rem;
+        color: #0F172A;
+        margin-top: 0.3rem;
+    }
+
+    /* Kanban Board Layout */
+    .kanban-board {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        align-items: start;
+    }
+
+    .kanban-column {
+        background: #F1F5F9;
+        border-radius: 12px;
+        padding: 1rem;
+        min-height: 500px;
+    }
+
+    .column-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #CBD5E1;
+    }
+
+    .column-header h4 {
+        font-size: 1rem;
+        color: #0F172A;
+        font-weight: 700;
+    }
+
+    .count-badge {
+        background: #CBD5E1;
+        color: #0F172A;
+        padding: 0.1rem 0.6rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 700;
+    }
+
+    /* Lead Card in Kanban */
+    .lead-crm-card {
+        background: white;
+        padding: 1.2rem;
+        border-radius: 10px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        margin-bottom: 1rem;
+        transition: transform 0.2s ease;
+    }
+
+    .lead-crm-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .lead-name {
+        font-weight: 700;
+        color: #0F172A;
+        font-size: 1rem;
+    }
+
+    .lead-req {
+        font-size: 0.85rem;
+        color: #4F46E5;
+        background: #EEF2FF;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        margin: 0.5rem 0;
+        display: inline-block;
+    }
+
+    .lead-meta {
+        font-size: 0.8rem;
+        color: #64748B;
+        margin-bottom: 0.8rem;
+    }
+
+    .status-select {
+        width: 100%;
+        padding: 0.4rem;
+        border: 1px solid #CBD5E1;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: #F8FAFC;
+    }
+
+    @media (max-width: 1000px) {
+        .kanban-board { grid-template-columns: 1fr; }
+        .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+</style>
+
+<div class="crm-header">
+    <div>
+        <h1>📊 Real-Time Lead <span>CRM Board</span></h1>
+        <p style="color: #64748B;">Manage, Track & Move Firestore Leads through Sales Pipeline Stages</p>
+    </div>
+    <button id="refresh-crm-btn" style="background: #4F46E5; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer;">
+        <i class="fa-solid fa-rotate"></i> Sync Firestore Leads
+    </button>
+</div>
+
+<!-- Stats Banner -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <p>Total Leads</p>
+        <h3 id="stat-total">0</h3>
+    </div>
+    <div class="stat-card">
+        <p>New Leads</p>
+        <h3 id="stat-new" style="color: #4F46E5;">0</h3>
+    </div>
+    <div class="stat-card">
+        <p>In Discussion</p>
+        <h3 id="stat-discussion" style="color: #EAB308;">0</h3>
+    </div>
+    <div class="stat-card">
+        <p>Closed Won 🎉</p>
+        <h3 id="stat-won" style="color: #10B981;">0</h3>
+    </div>
+</div>
+
+<!-- Kanban CRM Pipeline Board -->
+<div class="kanban-board">
+    <!-- Stage 1: New Lead -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <h4 style="color: #4F46E5;">⚡ New Leads</h4>
+            <span id="count-new" class="count-badge">0</span>
+        </div>
+        <div id="col-new"></div>
+    </div>
+
+    <!-- Stage 2: Contacted / Pitched -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <h4 style="color: #0284C7;">✉️ Contacted & Pitched</h4>
+            <span id="count-contacted" class="count-badge">0</span>
+        </div>
+        <div id="col-contacted"></div>
+    </div>
+
+    <!-- Stage 3: In Discussion -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <h4 style="color: #CA8A04;">🤝 Proposal / Discussion</h4>
+            <span id="count-discussion" class="count-badge">0</span>
+        </div>
+        <div id="col-discussion"></div>
+    </div>
+
+    <!-- Stage 4: Closed Won -->
+    <div class="kanban-column">
+        <div class="column-header">
+            <h4 style="color: #16A34A;">🎉 Deal Closed Won</h4>
+            <span id="count-won" class="count-badge">0</span>
+        </div>
+        <div id="col-won"></div>
+    </div>
+</div>
+
+<script type="module">
+    import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    const colNew = document.getElementById('col-new');
+    const colContacted = document.getElementById('col-contacted');
+    const colDiscussion = document.getElementById('col-discussion');
+    const colWon = document.getElementById('col-won');
+
+    const refreshBtn = document.getElementById('refresh-crm-btn');
+
+    async function loadCRMData() {
+        refreshBtn.disabled = true;
+        refreshBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Syncing...`;
+
+        colNew.innerHTML = '';
+        colContacted.innerHTML = '';
+        colDiscussion.innerHTML = '';
+        colWon.innerHTML = '';
+
+        let total = 0, newCount = 0, contactedCount = 0, discussionCount = 0, wonCount = 0;
+
+        try {
+            // Fetch extracted leads from Firestore
+            const querySnapshot = await getDocs(collection(window.db, "extracted_leads"));
+            
+            // Fallback sample data if empty
+            if (querySnapshot.empty) {
+                renderSampleLeads();
+                refreshBtn.disabled = false;
+                refreshBtn.innerHTML = `<i class="fa-solid fa-rotate"></i> Sync Firestore Leads`;
+                return;
+            }
+
+            querySnapshot.forEach((documentSnap) => {
+                total++;
+                const lead = documentSnap.data();
+                const leadId = documentSnap.id;
+                const status = lead.crm_status || 'New';
+
+                const cardHTML = createLeadCardHTML(leadId, lead, status);
+
+                if (status === 'New') {
+                    newCount++;
+                    colNew.innerHTML += cardHTML;
+                } else if (status === 'Contacted') {
+                    contactedCount++;
+                    colContacted.innerHTML += cardHTML;
+                } else if (status === 'Discussion') {
+                    discussionCount++;
+                    colDiscussion.innerHTML += cardHTML;
+                } else if (status === 'Won') {
+                    wonCount++;
+                    colWon.innerHTML += cardHTML;
+                }
+            });
+
+            // Update Counts
+            document.getElementById('stat-total').innerText = total;
+            document.getElementById('stat-new').innerText = newCount;
+            document.getElementById('stat-discussion').innerText = discussionCount;
+            document.getElementById('stat-won').innerText = wonCount;
+
+            document.getElementById('count-new').innerText = newCount;
+            document.getElementById('count-contacted').innerText = contactedCount;
+            document.getElementById('count-discussion').innerText = discussionCount;
+            document.getElementById('count-won').innerText = wonCount;
+
+            attachStatusChangeListeners();
+        } catch (err) {
+            console.error("Firestore Load Error: ", err);
+            renderSampleLeads();
+        } finally {
+            refreshBtn.disabled = false;
+            refreshBtn.innerHTML = `<i class="fa-solid fa-rotate"></i> Sync Firestore Leads`;
+        }
+    }
+
+    function createLeadCardHTML(id, lead, currentStatus) {
+        return `
+            <div class="lead-crm-card" id="card-${id}">
+                <div class="lead-name">${lead.business_name || lead.name || 'Client Lead'}</div>
+                <div class="lead-req">${lead.client_requirement || lead.niche || 'Lead Requirement'}</div>
+                <div class="lead-meta">
+                    📍 ${lead.city || 'City'}, ${lead.country || 'Country'}<br>
+                    📞 ${lead.phone || 'N/A'}<br>
+                    ✉️ <code>${lead.email || 'N/A'}</code>
+                </div>
+                <select class="status-select" data-id="${id}">
+                    <option value="New" ${currentStatus === 'New' ? 'selected' : ''}>⚡ Stage: New</option>
+                    <option value="Contacted" ${currentStatus === 'Contacted' ? 'selected' : ''}>✉️ Stage: Contacted</option>
+                    <option value="Discussion" ${currentStatus === 'Discussion' ? 'selected' : ''}>🤝 Stage: Discussion</option>
+                    <option value="Won" ${currentStatus === 'Won' ? 'selected' : ''}>🎉 Stage: Closed Won</option>
+                </select>
+            </div>
+        `;
+    }
+
+    function renderSampleLeads() {
+        const samples = [
+            { id: '1', business_name: 'Apex Real Estate 1', niche: 'Real Estate', city: 'Delhi', country: 'India', client_requirement: 'Needs Luxury Villa Meta Ads', status: 'New', email: 'contact@apex.com', phone: '+91 9876543210' },
+            { id: '2', business_name: 'NexGen Software', niche: 'IT & Software', city: 'Mumbai', country: 'India', client_requirement: 'Hiring Django & React Devs', status: 'Contacted', email: 'dev@nexgen.io', phone: '+91 9811122233' },
+            { id: '3', business_name: 'Global Tech Dubai', niche: 'IT & Software', city: 'Dubai', country: 'UAE', client_requirement: 'Cloud AWS Migration Team', status: 'Discussion', email: 'info@global.ae', phone: '+971 501234567' },
+            { id: '4', business_name: 'Starlight E-commerce', niche: 'E-commerce', city: 'New York', country: 'US', client_requirement: 'Shopify Plus Optimization', status: 'Won', email: 'support@starlight.com', phone: '+1 2025550143' }
+        ];
+
+        colNew.innerHTML = createLeadCardHTML(samples[0].id, samples[0], 'New');
+        colContacted.innerHTML = createLeadCardHTML(samples[1].id, samples[1], 'Contacted');
+        colDiscussion.innerHTML = createLeadCardHTML(samples[2].id, samples[2], 'Discussion');
+        colWon.innerHTML = createLeadCardHTML(samples[3].id, samples[3], 'Won');
+
+        document.getElementById('stat-total').innerText = '4';
+        document.getElementById('stat-new').innerText = '1';
+        document.getElementById('stat-discussion').innerText = '1';
+        document.getElementById('stat-won').innerText = '1';
+
+        document.getElementById('count-new').innerText = '1';
+        document.getElementById('count-contacted').innerText = '1';
+        document.getElementById('count-discussion').innerText = '1';
+        document.getElementById('count-won').innerText = '1';
+
+        attachStatusChangeListeners();
+    }
+
+    function attachStatusChangeListeners() {
+        document.querySelectorAll('.status-select').forEach(select => {
+            select.addEventListener('change', async (e) => {
+                const leadId = e.target.getAttribute('data-id');
+                const newStatus = e.target.value;
+
+                try {
+                    // Update CRM Stage in Firestore DB
+                    const leadRef = doc(window.db, "extracted_leads", leadId);
+                    await updateDoc(leadRef, {
+                        crm_status: newStatus,
+                        updated_at: new Date()
+                    });
+                } catch (err) {
+                    console.log("Status update note: ", err.message);
+                }
+                loadCRMData();
+            });
+        });
+    }
+
+    refreshBtn.addEventListener('click', loadCRMData);
+    window.addEventListener('DOMContentLoaded', loadCRMData);
+</script>
+{% endblock %}

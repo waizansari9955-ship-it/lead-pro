@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+
+{% block title %}Book a Call | LeadPro Lead Generation{% endblock %}
+
+{% block content %}
+<style>
+    .contact-container {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 3rem;
+        padding: 3rem 0;
+    }
+
+    .contact-info h1 {
+        font-size: 2.5rem;
+        color: #0F172A;
+        margin-bottom: 1rem;
+    }
+
+    .contact-info p {
+        color: #64748B;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+    }
+
+    .info-item {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-item i {
+        background: #EEF2FF;
+        color: #4F46E5;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .lead-form-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+        border: 1px solid #E2E8F0;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 1.5px solid #CBD5E1;
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: #4F46E5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: #4F46E5;
+        color: white;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        background: #4338CA;
+    }
+
+    @media (max-width: 850px) {
+        .contact-container { grid-template-columns: 1fr; }
+        .form-row { grid-template-columns: 1fr; }
+    }
+</style>
+
+<div class="contact-container">
+    <div class="contact-info">
+        <h1>Let's Discuss Your <span>Lead Goals</span></h1>
+        <p>Ready to automate your client acquisition pipeline? Send your details and our team will get in touch within 2 hours!</p>
+
+        <div class="info-item">
+            <i class="fa-solid fa-phone"></i>
+            <div>
+                <h4 style="color: #0F172A;">Phone / WhatsApp</h4>
+                <p style="color: #64748B; margin: 0;">+91 98765 43210</p>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <i class="fa-solid fa-envelope"></i>
+            <div>
+                <h4 style="color: #0F172A;">Email Support</h4>
+                <p style="color: #64748B; margin: 0;">leads@leadpro-agency.com</p>
+            </div>
+        </div>
+
+        <div class="info-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <div>
+                <h4 style="color: #0F172A;">Office Location</h4>
+                <p style="color: #64748B; margin: 0;">Tech Hub Center, Business District</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="lead-form-card">
+        <h2 style="color: #0F172A; margin-bottom: 0.5rem;">🔥 Submit Lead Request</h2>
+        <p style="color: #64748B; font-size: 0.95rem; margin-bottom: 1.5rem;">Directly synchronized into your Firestore Database!</p>
+
+        <div id="contact-status" style="display: none; padding: 0.8rem; margin-bottom: 1rem; border-radius: 6px; font-size: 0.95rem;"></div>
+
+        <form id="contact-lead-form">
+            <div class="form-group">
+                <label>Your Name *</label>
+                <input type="text" id="c-name" class="form-control" placeholder="Fariz Khan" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="c-email" class="form-control" placeholder="fariz@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="c-phone" class="form-control" placeholder="+91 9876543210" required>
+                </div>
+            </div>
+
+            <!-- Country & City Fields -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Country *</label>
+                    <select id="c-country" class="form-control" required style="background: white;">
+                        <option value="">Select Country...</option>
+                        <option value="India">India</option>
+                        <option value="United States">United States</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Saudi Arabia">Saudi Arabia</option>
+                        <option value="Pakistan">Pakistan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>City *</label>
+                    <select id="c-city" class="form-control" required style="background: white;">
+                        <option value="">Select City...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Company / Project Name</label>
+                <input type="text" id="c-company" class="form-control" placeholder="e.g. Acme Tech Solutions">
+            </div>
+
+            <div class="form-group">
+                <label>Project Message / Requirements *</label>
+                <textarea id="c-message" rows="4" class="form-control" placeholder="Describe your business and lead requirements..." required></textarea>
+            </div>
+
+            <button type="submit" id="c-btn" class="btn-submit">
+                <i class="fa-solid fa-paper-plane"></i> Submit Lead to Firestore
+            </button>
+        </form>
+    </div>
+</div>
+
+<script type="module">
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    // Country to City Data Map
+    const cityMap = {
+        "India": ["Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Pune", "Ahmedabad", "Lucknow", "Jaipur"],
+        "United States": ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Dallas", "San Francisco", "Miami"],
+        "United Arab Emirates": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman"],
+        "United Kingdom": ["London", "Manchester", "Birmingham", "Leeds", "Glasgow"],
+        "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
+        "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth"],
+        "Saudi Arabia": ["Riyadh", "Jeddah", "Dammam", "Mecca"],
+        "Pakistan": ["Karachi", "Lahore", "Islamabad", "Rawalpindi"]
+    };
+
+    const cCountry = document.getElementById('c-country');
+    const cCity = document.getElementById('c-city');
+
+    cCountry.addEventListener('change', () => {
+        const countryVal = cCountry.value;
+        cCity.innerHTML = '<option value="">Select City...</option>';
+        if (countryVal && cityMap[countryVal]) {
+            cityMap[countryVal].forEach(city => {
+                const opt = document.createElement('option');
+                opt.value = city;
+                opt.textContent = city;
+                cCity.appendChild(opt);
+            });
+        }
+    });
+
+    const contactForm = document.getElementById('contact-lead-form');
+    const contactStatus = document.getElementById('contact-status');
+    const contactBtn = document.getElementById('c-btn');
+
+    contactForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('c-name').value;
+        const email = document.getElementById('c-email').value;
+        const phone = document.getElementById('c-phone').value;
+        const country = document.getElementById('c-country').value;
+        const city = document.getElementById('c-city').value;
+        const company = document.getElementById('c-company').value;
+        const message = document.getElementById('c-message').value;
+
+        contactBtn.disabled = true;
+        contactBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Submitting...`;
+
+        try {
+            // Save lead to Firestore 'leads' collection
+            const docRef = await addDoc(collection(window.db, "leads"), {
+                name: name,
+                email: email,
+                phone: phone,
+                country: country,
+                city: city,
+                company: company || "N/A",
+                message: message,
+                source_page: "Contact Page",
+                timestamp: new Date()
+            });
+
+            contactStatus.style.display = 'block';
+            contactStatus.style.background = '#D1FAE5';
+            contactStatus.style.color = '#065F46';
+            contactStatus.style.border = '1px solid #A7F3D0';
+            contactStatus.innerHTML = `<strong>🎉 Lead Successfully Created!</strong> ID: <code>${docRef.id}</code> (${city}, ${country}). Saved to Firestore!`;
+            contactForm.reset();
+            cCity.innerHTML = '<option value="">Select City...</option>';
+        } catch (error) {
+            console.error("Contact Lead Save Error: ", error);
+            contactStatus.style.display = 'block';
+            contactStatus.style.background = '#FEE2E2';
+            contactStatus.style.color = '#991B1B';
+            contactStatus.style.border = '1px solid #FCA5A5';
+            contactStatus.innerHTML = `<strong>Error:</strong> ${error.message}`;
+        } finally {
+            contactBtn.disabled = false;
+            contactBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Submit Lead to Firestore`;
+        }
+    });
+</script>
+{% endblock %}

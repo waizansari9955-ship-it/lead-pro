@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Lead Generation Services | LeadPro{% endblock %}
+
+{% block content %}
+<div style="padding: 2rem 0;">
+    <div style="text-align: center; max-width: 700px; margin: 0 auto 3rem auto;">
+        <h1 style="font-size: 2.5rem; color: #0F172A; margin-bottom: 1rem;">Lead Generation Solutions</h1>
+        <p style="color: #64748B; font-size: 1.1rem;">Choose a specialized package designed to generate high-intent leads for your business category.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+        <!-- Card 1 -->
+        <div style="background: white; padding: 2rem; border-radius: 12px; border: 1px solid #E2E8F0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+            <div style="background: #EEF2FF; color: #4F46E5; display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.85rem; margin-bottom: 1rem;">Popular</div>
+            <h2 style="color: #0F172A; margin-bottom: 0.5rem;">B2B Lead Accelerator</h2>
+            <p style="color: #64748B; margin-bottom: 1.5rem;">Get high-value decision maker leads directly into your CRM.</p>
+            <ul style="list-style: none; padding: 0; line-height: 2; color: #334155; margin-bottom: 2rem;">
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> Verified Corporate Emails</li>
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> LinkedIn Prospecting</li>
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> Real-time Firestore Sync</li>
+            </ul>
+            <a href="{% url 'contact' %}" style="display: block; text-align: center; background: #4F46E5; color: white; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Get Started</a>
+        </div>
+
+        <!-- Card 2 -->
+        <div style="background: white; padding: 2rem; border-radius: 12px; border: 1px solid #E2E8F0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+            <div style="background: #ECFDF5; color: #059669; display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.85rem; margin-bottom: 1rem;">High Growth</div>
+            <h2 style="color: #0F172A; margin-bottom: 0.5rem;">Real Estate Lead Funnel</h2>
+            <p style="color: #64748B; margin-bottom: 1.5rem;">Pre-qualified buyers & sellers looking for properties today.</p>
+            <ul style="list-style: none; padding: 0; line-height: 2; color: #334155; margin-bottom: 2rem;">
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> Budget Qualified Buyers</li>
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> Automated SMS/Email Alerts</li>
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> Location Targeted Leads</li>
+            </ul>
+            <a href="{% url 'contact' %}" style="display: block; text-align: center; background: #0F172A; color: white; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Get Started</a>
+        </div>
+
+        <!-- Card 3 -->
+        <div style="background: white; padding: 2rem; border-radius: 12px; border: 1px solid #E2E8F0; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+            <div style="background: #FFF7ED; color: #EA580C; display: inline-block; padding: 0.4rem 1rem; border-radius: 50px; font-weight: 600; font-size: 0.85rem; margin-bottom: 1rem;">Custom</div>
+            <h2 style="color: #0F172A; margin-bottom: 0.5rem;">Custom Lead System</h2>
+            <p style="color: #64748B; margin-bottom: 1.5rem;">Custom landing pages, ad campaigns & direct database funnel.</p>
+            <ul style="list-style: none; padding: 0; line-height: 2; color: #334155; margin-bottom: 2rem;">
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> High Converting Landing Page</li>
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> Custom Database Setup</li>
+                <li><i class="fa-solid fa-check" style="color: #10B981;"></i> Dedicated Account Manager</li>
+            </ul>
+            <a href="{% url 'contact' %}" style="display: block; text-align: center; background: #4F46E5; color: white; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: 600;">Contact Us</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

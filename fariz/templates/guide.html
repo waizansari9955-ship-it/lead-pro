@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}Lead Finder & Pitch Tool - Complete User Guide Book{% endblock %}
+
+{% block content %}
+<style>
+    .guide-header {
+        text-align: center;
+        margin: 2rem 0 3rem 0;
+    }
+
+    .guide-header h1 {
+        font-size: 2.6rem;
+        color: #0F172A;
+        font-weight: 800;
+    }
+
+    .guide-header p {
+        color: #64748B;
+        font-size: 1.1rem;
+        margin-top: 0.5rem;
+    }
+
+    .guide-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 16px;
+        border: 1px solid #E2E8F0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin-bottom: 2rem;
+    }
+
+    .step-badge {
+        display: inline-block;
+        background: #EEF2FF;
+        color: #4F46E5;
+        font-weight: 700;
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        border: 1px solid #C7D2FE;
+    }
+
+    .guide-card h2 {
+        color: #0F172A;
+        font-size: 1.5rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .guide-card p {
+        color: #475569;
+        font-size: 1rem;
+        line-height: 1.7;
+    }
+
+    .feature-list {
+        margin-top: 1rem;
+        padding-left: 1.2rem;
+        color: #334155;
+        line-height: 1.8;
+    }
+
+    .code-box {
+        background: #0F172A;
+        color: #E2E8F0;
+        padding: 1rem;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        overflow-x: auto;
+    }
+</style>
+
+<div class="guide-header">
+    <h1>📖 LeadPro Platform <span>Guide Book</span></h1>
+    <p>Complete step-by-step documentation for Lead Extraction, Client Pitching & Firestore DB Setup</p>
+</div>
+
+<!-- Chapter 1 -->
+<div class="guide-card">
+    <span class="step-badge">Chapter 1</span>
+    <h2>🔍 How to Use the AI Lead Finder Tool</h2>
+    <p>The Lead Finder Tool allows you to extract real-time targeted business leads filtered by Industry, Country, and City.</p>
+    <ul class="feature-list">
+        <li><strong>Select Target Industry:</strong> Choose from Real Estate, IT Companies, Digital Marketing, Healthcare, etc.</li>
+        <li><strong>Choose Location:</strong> Select Country (India, US, UAE, UK, Canada) and dependent City (e.g. Delhi, Mumbai, Dubai, London).</li>
+        <li><strong>Click Generate Leads:</strong> The extraction engine pulls business details, full office addresses, and client requirement intent signals.</li>
+    </ul>
+</div>
+
+<!-- Chapter 2 -->
+<div class="guide-card">
+    <span class="step-badge">Chapter 2</span>
+    <h2>🚀 Generating AI Sales Pitches for Clients</h2>
+    <p>Turn leads into paying clients using our automated AI proposal script generator.</p>
+    <ul class="feature-list">
+        <li><strong>Click "Pitch Client":</strong> Open the interactive AI proposal modal for any generated business lead.</li>
+        <li><strong>Customized Proposals:</strong> The system automatically drafts a personalized cold outreach script tailored to the client's specific requirement.</li>
+        <li><strong>1-Click Copy & Email:</strong> Use <code>Copy Pitch Message</code> or <code>Send Email Now</code> to instantly contact prospects.</li>
+    </ul>
+</div>
+
+<!-- Chapter 3 -->
+<div class="guide-card">
+    <span class="step-badge">Chapter 3</span>
+    <h2>💾 Real-time Firestore Database Storage</h2>
+    <p>All captured leads from both the <strong>Home Page Hero Form</strong>, <strong>Contact Form</strong>, and <strong>Lead Tool</strong> are synchronized directly into your Firebase Firestore Database.</p>
+
+    <h4 style="color: #0F172A; margin-top: 1rem;">Firestore Collections Structure:</h4>
+    <div class="code-box">
+• Collection: "leads" -> Captures organic form submissions from Home & Contact pages.
+• Collection: "extracted_leads" -> Stores extracted business leads along with Full Address, Client Requirements, and Data Source metadata.
+    </div>
+</div>
+
+<!-- Chapter 4 -->
+<div class="guide-card">
+    <span class="step-badge">Chapter 4</span>
+    <h2>🌐 Data Sources & Verification</h2>
+    <p>Where does the lead data come from?</p>
+    <ul class="feature-list">
+        <li><strong>Google Places & Maps API:</strong> Real-time verified physical business addresses and contact details.</li>
+        <li><strong>Public Web Registries:</strong> Justdial, YellowPages & Local Business Directory signals.</li>
+        <li><strong>Client Intent Signals:</strong> Live hiring & RFQ posts indicating active client requirements.</li>
+    </ul>
+</div>
+{% endblock %}

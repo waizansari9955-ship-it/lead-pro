@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LeadPro | High-Converting Lead Platform{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --accent: #10B981;
+            --dark: #0F172A;
+            --light: #F8FAFC;
+            --gray: #64748B;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        /* Clean Balanced Navbar */
+        .navbar {
+            background: #0F172A;
+            padding: 0.8rem 4%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-brand {
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-brand span {
+            color: var(--accent);
+        }
+
+        .navbar-links {
+            display: flex;
+            list-style: none;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: #94A3B8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.4rem 0.7rem;
+            border-radius: 6px;
+            transition: all 0.25s ease;
+        }
+
+        .navbar-links a:hover, .navbar-links a.active {
+            color: #FFFFFF;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-nav-tool {
+            background: rgba(16, 185, 129, 0.12) !important;
+            color: var(--accent) !important;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            font-weight: 600 !important;
+        }
+
+        .btn-nav-tool:hover {
+            background: var(--accent) !important;
+            color: #FFFFFF !important;
+        }
+
+        .btn-nav-guide {
+            background: rgba(79, 70, 229, 0.15) !important;
+            color: #818CF8 !important;
+            border: 1px solid rgba(129, 140, 248, 0.3);
+            font-weight: 600 !important;
+        }
+
+        .btn-nav-guide:hover {
+            background: #4F46E5 !important;
+            color: #FFFFFF !important;
+        }
+
+        .btn-nav-cta {
+            background: var(--primary);
+            color: white !important;
+            padding: 0.5rem 1.2rem !important;
+            border-radius: 50px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            transition: transform 0.2s ease, background 0.3s ease !important;
+        }
+
+        .btn-nav-cta:hover {
+            background: var(--primary-hover) !important;
+            transform: translateY(-1px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: #94A3B8;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            margin-top: 4rem;
+            border-top: 1px solid #1E293B;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 990px) {
+            .navbar-links { gap: 0.6rem; }
+            .navbar-links a { font-size: 0.8rem; padding: 0.3rem 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="navbar-brand">
+            <i class="fa-solid fa-rocket" style="color: var(--accent);"></i> Lead<span>Pro</span>
+        </a>
+        <ul class="navbar-links">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'lead_tool' %}" class="btn-nav-tool"><i class="fa-solid fa-wand-magic-sparkles"></i> Lead Finder</a></li>
+            <li><a href="{% url 'crm' %}" style="background: rgba(234, 179, 8, 0.15); color: #EAB308; border: 1px solid rgba(234, 179, 8, 0.4); font-weight: 600;"><i class="fa-solid fa-chart-kanban"></i> CRM Dashboard</a></li>
+            <li><a href="{% url 'guide' %}" class="btn-nav-guide"><i class="fa-solid fa-book-open"></i> User Guide</a></li>
+            <li><a href="{% url 'services' %}">Services</a></li>
+            <li><a href="{% url 'contact' %}" class="btn-nav-cta"><i class="fa-solid fa-bolt"></i> Get Free Quote</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2026 <strong>LeadPro Technologies</strong>. AI Lead Finder & Sales Pitch Automation. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase Configuration and SDK -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-analytics.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA_jppf5jqXklVO101xd4hR9RRsxRWH3mk",
+        authDomain: "django-9b134.firebaseapp.com",
+        projectId: "django-9b134",
+        storageBucket: "django-9b134.firebasestorage.app",
+        messagingSenderId: "897309299203",
+        appId: "1:897309299203:web:e1b5c411c22fee515ef436",
+        measurementId: "G-45SH8XY210"
+      };
+
+      // Initialize Firebase & Firestore
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const db = getFirestore(app);
+      window.db = db;
+      console.log("Firebase & Firestore initialized successfully!");
+    </script>
+</body>
+</html>

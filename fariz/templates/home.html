@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+
+{% block title %}LeadPro | High Converting Lead Generation Agency{% endblock %}
+
+{% block content %}
+<style>
+    /* Hero Section */
+    .hero-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: center;
+        padding: 3rem 0;
+    }
+
+    .hero-text h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        color: #0F172A;
+        line-height: 1.2;
+        margin-bottom: 1.2rem;
+    }
+
+    .hero-text h1 span {
+        background: linear-gradient(135deg, #4F46E5, #10B981);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .hero-text p {
+        font-size: 1.15rem;
+        color: #64748B;
+        margin-bottom: 2rem;
+    }
+
+    .trust-badges {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        margin-top: 2rem;
+        color: #64748B;
+        font-size: 0.9rem;
+    }
+
+    .trust-badges i {
+        color: #10B981;
+    }
+
+    /* Lead Form Card */
+    .lead-card {
+        background: #FFFFFF;
+        padding: 2.5rem;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid #E2E8F0;
+    }
+
+    .lead-card h2 {
+        font-size: 1.6rem;
+        color: #0F172A;
+        margin-bottom: 0.5rem;
+    }
+
+    .lead-card p {
+        color: #64748B;
+        font-size: 0.95rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: 1.5px solid #CBD5E1;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border 0.2s ease;
+        outline: none;
+    }
+
+    .form-control:focus {
+        border-color: #4F46E5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .btn-submit {
+        width: 100%;
+        background: linear-gradient(135deg, #4F46E5, #4338CA);
+        color: white;
+        padding: 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+    }
+
+    /* Features Section */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 5rem;
+    }
+
+    .feature-box {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid #E2E8F0;
+        text-align: center;
+    }
+
+    .feature-box i {
+        font-size: 2.5rem;
+        color: #4F46E5;
+        margin-bottom: 1rem;
+    }
+
+    .feature-box h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: #0F172A;
+    }
+
+    @media (max-width: 900px) {
+        .hero-section { grid-template-columns: 1fr; }
+        .features-grid { grid-template-columns: 1fr; }
+        .form-row { grid-template-columns: 1fr; }
+    }
+</style>
+
+<section class="hero-section">
+    <div class="hero-text">
+        <h1>Scale Your Business With <span>Qualified Leads</span> Daily.</h1>
+        <p>We help businesses generate 10x more targeted, high-paying client leads using AI-driven automated funnels and precision marketing.</p>
+        
+        <div class="trust-badges">
+            <span><i class="fa-solid fa-circle-check"></i> 100% Verified Leads</span>
+            <span><i class="fa-solid fa-circle-check"></i> Location Auto-Detected</span>
+            <span><i class="fa-solid fa-circle-check"></i> Instant Delivery</span>
+        </div>
+    </div>
+
+    <!-- Main Lead Capture Form -->
+    <div class="lead-card">
+        <h2>⚡ Request Free Strategy Audit</h2>
+        <p>Fill out the form below to get a customized lead growth roadmap!</p>
+
+        <div id="lead-status" style="display: none; padding: 0.8rem; margin-bottom: 1rem; border-radius: 6px; font-size: 0.95rem;"></div>
+
+        <form id="hero-lead-form">
+            <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" id="lead-name" class="form-control" placeholder="e.g. Fariz Khan" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Business Email *</label>
+                    <input type="email" id="lead-email" class="form-control" placeholder="e.g. fariz@company.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" id="lead-phone" class="form-control" placeholder="e.g. +91 9876543210" required>
+                </div>
+            </div>
+
+            <!-- Country & City Selector -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Country *</label>
+                    <select id="lead-country" class="form-control" required style="background: white;">
+                        <option value="">Select Country...</option>
+                        <option value="India">India</option>
+                        <option value="United States">United States</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Saudi Arabia">Saudi Arabia</option>
+                        <option value="Pakistan">Pakistan</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>City *</label>
+                    <select id="lead-city" class="form-control" required style="background: white;">
+                        <option value="">Select City...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Services Needed *</label>
+                <select id="lead-service" class="form-control" required style="background: white;">
+                    <option value="">Select Service...</option>
+                    <option value="Lead Generation Funnels">Lead Generation Funnels</option>
+                    <option value="B2B Qualified Leads">B2B Qualified Leads</option>
+                    <option value="Digital Marketing & Ads">Digital Marketing & Ads</option>
+                    <option value="CRM Automation">CRM Automation</option>
+                </select>
+            </div>
+            <button type="submit" id="lead-btn" class="btn-submit">
+                <i class="fa-solid fa-paper-plane"></i> Get Free Leads Roadmap
+            </button>
+        </form>
+    </div>
+</section>
+
+<!-- Features / Value Prop -->
+<section style="margin-top: 4rem;">
+    <h2 style="text-align: center; font-size: 2.2rem; color: #0F172A; margin-bottom: 2rem;">Why Industry Leaders Choose LeadPro</h2>
+    <div class="features-grid">
+        <div class="feature-box">
+            <i class="fa-solid fa-bullseye"></i>
+            <h3>Hyper Targeted</h3>
+            <p>We capture prospects actively searching for your products and services right now.</p>
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-database"></i>
+            <h3>Direct Firestore Sync</h3>
+            <p>All leads are instantly saved into your real-time database with Country & City metadata.</p>
+        </div>
+        <div class="feature-box">
+            <i class="fa-solid fa-chart-line"></i>
+            <h3>3x Conversion Rate</h3>
+            <p>Our validated multi-step funnel ensures maximum response rates for your sales team.</p>
+        </div>
+    </div>
+</section>
+
+<script type="module">
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    // Country to City Data Map
+    const cityData = {
+        "India": ["Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Pune", "Ahmedabad", "Lucknow", "Jaipur"],
+        "United States": ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Dallas", "San Francisco", "Miami"],
+        "United Arab Emirates": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman"],
+        "United Kingdom": ["London", "Manchester", "Birmingham", "Leeds", "Glasgow"],
+        "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
+        "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth"],
+        "Saudi Arabia": ["Riyadh", "Jeddah", "Dammam", "Mecca"],
+        "Pakistan": ["Karachi", "Lahore", "Islamabad", "Rawalpindi"]
+    };
+
+    const countrySelect = document.getElementById('lead-country');
+    const citySelect = document.getElementById('lead-city');
+
+    // Dynamic City Options Populator
+    countrySelect.addEventListener('change', () => {
+        const selectedCountry = countrySelect.value;
+        citySelect.innerHTML = '<option value="">Select City...</option>';
+
+        if (selectedCountry && cityData[selectedCountry]) {
+            cityData[selectedCountry].forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+        }
+    });
+
+    const leadForm = document.getElementById('hero-lead-form');
+    const leadStatus = document.getElementById('lead-status');
+    const leadBtn = document.getElementById('lead-btn');
+
+    leadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = document.getElementById('lead-name').value;
+        const email = document.getElementById('lead-email').value;
+        const phone = document.getElementById('lead-phone').value;
+        const country = document.getElementById('lead-country').value;
+        const city = document.getElementById('lead-city').value;
+        const service = document.getElementById('lead-service').value;
+
+        leadBtn.disabled = true;
+        leadBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving Lead to Firestore...`;
+
+        try {
+            // Write lead with Country & City to Firestore 'leads' collection
+            const docRef = await addDoc(collection(window.db, "leads"), {
+                name: name,
+                email: email,
+                phone: phone,
+                country: country,
+                city: city,
+                service_requested: service,
+                source_page: "Home Page Hero",
+                created_at: new Date()
+            });
+
+            leadStatus.style.display = 'block';
+            leadStatus.style.background = '#D1FAE5';
+            leadStatus.style.color = '#065F46';
+            leadStatus.style.border = '1px solid #A7F3D0';
+            leadStatus.innerHTML = `<strong>🎉 Lead Captured!</strong> ID: <code>${docRef.id}</code> (${city}, ${country}). Saved to Firestore!`;
+            leadForm.reset();
+            citySelect.innerHTML = '<option value="">Select City...</option>';
+        } catch (error) {
+            console.error("Lead Saving Error: ", error);
+            leadStatus.style.display = 'block';
+            leadStatus.style.background = '#FEE2E2';
+            leadStatus.style.color = '#991B1B';
+            leadStatus.style.border = '1px solid #FCA5A5';
+            leadStatus.innerHTML = `<strong>Error:</strong> ${error.message}`;
+        } finally {
+            leadBtn.disabled = false;
+            leadBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Get Free Leads Roadmap`;
+        }
+    });
+</script>
+{% endblock %}

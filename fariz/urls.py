@@ -14,6 +14,7 @@ urlpatterns = [
     path('crm/', views.crm, name='crm'),
     path('scraper/', views.scraper, name='scraper'),
     path('api/live-scrape/', views.api_live_scrape, name='api_live_scrape'),
+    path('api/live-search-leads/', views.api_live_search_leads, name='api_live_search_leads'),
 ]
 
 

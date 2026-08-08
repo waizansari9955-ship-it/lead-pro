@@ -164,14 +164,12 @@
                     <label>Country *</label>
                     <select id="c-country" class="form-control" required style="background: white;">
                         <option value="">Select Country...</option>
-                        <option value="India">India</option>
-                        <option value="United States">United States</option>
+                        <option value="United States" selected>United States (USA)</option>
                         <option value="United Arab Emirates">United Arab Emirates</option>
                         <option value="United Kingdom">United Kingdom</option>
                         <option value="Canada">Canada</option>
                         <option value="Australia">Australia</option>
                         <option value="Saudi Arabia">Saudi Arabia</option>
-                        <option value="Pakistan">Pakistan</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -204,14 +202,12 @@
 
     // Country to City Data Map
     const cityMap = {
-        "India": ["Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai", "Kolkata", "Pune", "Ahmedabad", "Lucknow", "Jaipur"],
         "United States": ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Dallas", "San Francisco", "Miami"],
         "United Arab Emirates": ["Dubai", "Abu Dhabi", "Sharjah", "Ajman"],
         "United Kingdom": ["London", "Manchester", "Birmingham", "Leeds", "Glasgow"],
         "Canada": ["Toronto", "Vancouver", "Montreal", "Calgary"],
         "Australia": ["Sydney", "Melbourne", "Brisbane", "Perth"],
-        "Saudi Arabia": ["Riyadh", "Jeddah", "Dammam", "Mecca"],
-        "Pakistan": ["Karachi", "Lahore", "Islamabad", "Rawalpindi"]
+        "Saudi Arabia": ["Riyadh", "Jeddah", "Dammam", "Mecca"]
     };
 
     const cCountry = document.getElementById('c-country');
